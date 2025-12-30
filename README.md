@@ -1,20 +1,80 @@
-# Household Energy Consumption Forecasting
+# 🏠 Household Energy Consumption Forecasting System
 
-A complete machine learning system for forecasting daily household energy consumption (Appliances in Wh) using the UCI Energy Consumption dataset.
+A **production-ready machine learning web application** that forecasts **next-day household energy consumption** using historical appliance usage data, lighting patterns, and optional environmental variables.
 
-## Features
+The system is built with **LightGBM**, served via a **Flask REST API**, and designed to reflect **real-world smart home energy analytics workflows**.
 
-- **Complete Forecasting Pipeline**: Single-file Python script for end-to-end forecasting
-- **Interactive Web App**: Beautiful Streamlit app for making predictions
-- **Multiple Models**: Random Forest, XGBoost, and LightGBM regression models
-- **Time-Series Best Practices**: Proper temporal train-test split, no data leakage
-- **Feature Engineering**: Lag features, rolling statistics, date features, and sequence features
+---
 
-## Project Structure
+## 📌 Project Overview
+
+Accurate energy forecasting is critical for optimizing household electricity usage and reducing operational costs.
+
+This project implements a **regression-based forecasting system** that predicts **next-day energy consumption** using recent historical patterns and contextual features.
+
+### The application integrates:
+- Feature-engineered time-series inputs  
+- A trained **LightGBM regression model**  
+- Scalable preprocessing and inference pipeline  
+- Web-based deployment using **Flask**
+
+---
+
+## 🚀 Key Features
+
+- Predicts **next-day energy consumption (Wh)**
+- Uses **7 days of historical appliance usage**
+- Incorporates **lighting usage** (most influential predictor)
+- Supports **optional environmental variables**
+- Robust **feature scaling and validation**
+- RESTful API for easy integration
+- Modular and **production-oriented code structure**
+
+---
+
+## 🤖 Machine Learning Approach
+
+- **Model Type:** Gradient Boosting Regression (LightGBM)  
+- **Problem Type:** Supervised Regression  
+- **Target Variable:** Household energy consumption (Wh)
+
+### Feature Engineering Techniques:
+- Lag features (1, 3, 7 days)
+- Rolling statistics (mean, standard deviation)
+- Calendar features (weekday, month, quarter, weekend)
+- Environmental conditions (optional)
+
+Preprocessing artifacts and model metadata are persisted using **joblib** to ensure consistency during inference.
+
+---
+
+## 🧰 Technology Stack
+
+### Programming Language
+- Python
+
+### Backend & Deployment
+- Flask
+- REST API
+
+### Machine Learning & Data
+- LightGBM
+- Scikit-learn
+- Pandas
+- NumPy
+
+### Model Persistence
+- Joblib
+
+---
+
+## 📁 Project Structure
+
+
 
 ```
 energy_forecasting/
-├── forecast_energy.py      # Complete forecasting script (single file)
+├── forecast_energy.ipynb      # Complete forecasting script (single file)
 ├── app.py                  # Streamlit web application
 ├── requirements.txt        # Python dependencies
 ├── README.md              # This file
@@ -40,13 +100,9 @@ energy_forecasting/
 
 ### Step 1: Train the Model
 
-Run the complete forecasting script to train models and generate predictions:
+Run the complete forecasting notebook to train models and generate predictions:
 
-```bash
-python forecast_energy.py
-```
-
-This script will:
+This notebook will:
 - Load and preprocess the data (resample to daily, handle outliers)
 - Perform exploratory data analysis with visualizations
 - Engineer features (lags, rolling stats, date features)
@@ -150,7 +206,19 @@ This project is for educational and research purposes.
 
 Built with ❤️ for energy forecasting
 
+## Link
 
+http://127.0.0.1:5000/
+
+## Demo
+
+<img width="1306" height="903" alt="Screenshot 2025-12-30 093757" src="https://github.com/user-attachments/assets/9e32278a-ca20-43ac-9f46-fb4e8e6049bd" />
+
+
+<img width="1270" height="916" alt="Screenshot 2025-12-30 093906" src="https://github.com/user-attachments/assets/da358fb9-6b5d-426a-8b38-f72943137d63" />
+
+
+<img width="1336" height="911" alt="Screenshot 2025-12-30 093833" src="https://github.com/user-attachments/assets/27743f27-b6dc-4e8a-8d5b-1835eb842780" />
 
 
 
