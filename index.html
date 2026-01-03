@@ -1,116 +1,257 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Next-Day Energy Forecast</title>
-    <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; margin: 0; padding: 20px; }
-        .container { max-width: 900px; margin: 40px auto; background: #1e293b; padding: 40px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        h1 { text-align: center; color: #60a5fa; }
-        .section { margin: 30px 0; padding: 20px; background: #334155; border-radius: 12px; }
-        label { display: block; margin: 15px 0 8px; font-weight: bold; color: #94a3b8; }
-        input[type=number], input[type=date] { width: 100%; padding: 12px; border-radius: 8px; border: none; background: #475569; color: white; font-size: 16px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; }
-        button { width: 100%; padding: 16px; background: #3b82f6; color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; }
-        button:hover { background: #2563eb; }
-        .result { margin-top: 30px; padding: 25px; background: #1e40af; border-radius: 12px; text-align: center; font-size: 28px; display: none; }
-        .advanced-toggle { color: #60a5fa; cursor: pointer; text-decoration: underline; margin-top: 10px; }
-        .note { font-size: 14px; color: #94a3b8; margin-top: 20px; text-align: center; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Energy Forecast • Tomorrow</title>
+<style>
+    :root {
+        --bg: #0f172a;
+        --card-bg: #1e293b;
+        --input-bg: #334155;
+        --accent: #06b6d4;
+        --accent-hover: #0891b2;
+        --success: #10b981;
+        --text: #f1f5f9;
+        --text-muted: #94a3b8;
+        --border: #475569;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        color: var(--text);
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 1100px; /* ← Original first version width */
+        margin: 0 auto;
+        background: var(--card-bg);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    }
+
+    .header {
+        background: linear-gradient(90deg, var(--accent), #0ea5e9);
+        padding: 30px; /* ← Original spacious padding */
+        text-align: center;
+        color: white;
+    }
+
+    .header h1 {
+        font-size: 2.2rem; /* ← Original large title */
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .header p {
+        opacity: 0.95;
+        font-size: 1rem;
+    }
+
+    .content {
+        padding: 40px; /* ← Original generous content padding */
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 28px; /* ← Original spacious gap */
+    }
+
+    @media (min-width: 768px) {
+        .grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    .card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 24px; /* ← Original card padding */
+        transition: transform 0.2s;
+    }
+
+    .card:hover {
+        transform: translateY(-4px);
+    }
+
+    .card h3 {
+        color: var(--accent);
+        margin-bottom: 16px;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    input {
+        width: 100%;
+        padding: 14px 16px; /* ← Original comfortable input size */
+        background: var(--input-bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        color: var(--text);
+        font-size: 1rem;
+        transition: border 0.3s;
+    }
+
+    input:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2);
+    }
+
+    .days-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 12px;
+        margin-top: 12px;
+    }
+
+    .advanced-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 12px;
+    }
+
+    button {
+        width: 100%;
+        padding: 16px;
+        margin-top: 24px;
+        background: var(--accent);
+        color: white;
+        border: none;
+        border-radius: 14px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    button:hover {
+        background: var(--accent-hover);
+    }
+
+    .result {
+        margin-top: 30px;
+        background: linear-gradient(135deg, var(--success), #059669);
+        color: white;
+        padding: 30px;
+        border-radius: 16px;
+        text-align: center;
+        font-size: 1.8rem;
+        font-weight: bold;
+        box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+        animation: fadeIn 0.6s ease-out;
+        display: none;
+    }
+
+    .result small {
+        display: block;
+        margin-top: 10px;
+        font-size: 1rem;
+        opacity: 0.9;
+        font-weight: normal;
+    }
+
+    .footer-note {
+        text-align: center;
+        margin-top: 30px;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>🔋 Next-Day Household Energy Forecast</h1>
-        <p style="text-align:center; color:#94a3b8;">Powered by {{ model_type }} • Trained on real home sensor data</p>
 
-        <div class="section">
-            <label>Prediction Date (Tomorrow)</label>
-            <input type="date" id="predictDate" value="{{ tomorrow }}" readonly>
-        </div>
-
-        <div class="section">
-            <label>Last 7 Days Appliance Energy Use (Wh) — Most Recent First</label>
-            <div class="grid">
-                <input type="number" placeholder="Today" id="d1" required>
-                <input type="number" placeholder="Yesterday" id="d2" required>
-                <input type="number" placeholder="2 days ago" id="d3" required>
-                <input type="number" placeholder="3 days ago" id="d4" required>
-                <input type="number" placeholder="4 days ago" id="d5" required>
-                <input type="number" placeholder="5 days ago" id="d6" required>
-                <input type="number" placeholder="6 days ago" id="d7" required>
-            </div>
-        </div>
-
-        <div class="section">
-            <label>Lights Energy Today (Wh) — Most Important Feature!</label>
-            <input type="number" id="lights" placeholder="e.g. 200 (or estimate)" required>
-        </div>
-
-        <div class="section">
-            <div class="advanced-toggle" onclick="document.getElementById('advanced').style.display='block'; this.style.display='none';">
-                + Add advanced inputs (improves accuracy)
-            </div>
-            <div id="advanced" style="display:none;">
-                <label>Bedroom Temperature (°C)</label>
-                <input type="number" step="0.1" id="bedroom_temp" placeholder="e.g. 21.5">
-
-                <label>Windspeed (km/h)</label>
-                <input type="number" step="0.1" id="windspeed" placeholder="from weather app">
-
-                <label>Atmospheric Pressure (mm Hg)</label>
-                <input type="number" id="pressure" placeholder="e.g. 760">
-            </div>
-        </div>
-
-        <button onclick="predict()">Predict Tomorrow's Energy Use</button>
-
-        <div id="result" class="result"></div>
-
-        <p class="note">
-            Based on your past week + lights usage. Advanced fields (bedroom temp, wind, pressure) boost accuracy!
-        </p>
+<div class="container">
+    <div class="header">
+        <h1>🔋 Next-Day Energy Forecast</h1>
+        <p>Powered by LightGBM • Real home sensor data</p>
     </div>
 
-    <script>
-        function predict() {
-            const days = [];
-            for (let i = 1; i <= 7; i++) {
-                const val = parseFloat(document.getElementById(`d${i}`).value);
-                if (isNaN(val) || val < 0) return alert("Please enter valid energy values");
-                days.push(val);
-            }
-            days.reverse(); // Make most recent first
+    <div class="content">
+        <div class="grid">
 
-            const data = {
-                recent_7_days: days,
-                lights: parseFloat(document.getElementById('lights').value) || 0,
-                predict_date: document.getElementById('predictDate').value,
-                bedroom_temp: parseFloat(document.getElementById('bedroom_temp').value) || null,
-                windspeed: parseFloat(document.getElementById('windspeed').value) || null,
-                pressure: parseFloat(document.getElementById('pressure').value) || null
-            };
+            <!-- Left Column -->
+            <div>
+                <div class="card">
+                    <h3>📅 Prediction Date</h3>
+                    <input type="date" id="predictDate" readonly>
+                </div>
 
-            fetch('/predict', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(data)
-            })
-            .then(r => r.json())
-            .then(res => {
-                const result = document.getElementById('result');
-                if (res.success) {
-                    result.innerHTML = `
-                        <strong>Predicted Energy on ${res.date}:</strong><br>
-                        <span style="font-size:48px; color:#60a5fa;">${res.prediction_wh} Wh</span><br><br>
-                        <small>Model: ${res.model}</small>
-                    `;
-                } else {
-                    result.innerHTML = `<strong>Error:</strong> ${res.error}`;
-                }
-                result.style.display = 'block';
-            });
-        }
-    </script>
+                <div class="card" style="margin-top: 24px;">
+                    <h3>📊 Last 7 Days Appliance Energy (Wh)</h3>
+                    <div class="days-grid">
+                        <input id="d1" placeholder="Today">
+                        <input id="d2" placeholder="Yesterday">
+                        <input id="d3" placeholder="2 days ago">
+                        <input id="d4" placeholder="3 days ago">
+                        <input id="d5" placeholder="4 days ago">
+                        <input id="d6" placeholder="5 days ago">
+                        <input id="d7" placeholder="6 days ago">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div>
+                <div class="card">
+                    <h3>💡 Lights Energy Today (Wh)</h3>
+                    <input id="lights" placeholder="e.g. 230">
+                </div>
+
+                <div class="card" style="margin-top: 24px;">
+                    <h3>🌤️ Advanced Weather Inputs (Optional)</h3>
+                    <div class="advanced-grid">
+                        <input id="bedroom_temp" placeholder="Bedroom °C">
+                        <input id="windspeed" placeholder="Wind km/h">
+                        <input id="pressure" placeholder="Pressure mmHg">
+                    </div>
+                </div>
+
+                <button onclick="predict()">Predict Tomorrow's Usage</button>
+
+                <div id="result" class="result"></div>
+            </div>
+        </div>
+
+        <div class="footer-note">
+            Uses recent usage + lights (most important feature). Advanced weather inputs improve accuracy.
+        </div>
+    </div>
+</div>
+
+<script>
+function predict() {
+    const resultBox = document.getElementById('result');
+
+    // Placeholder for demo (replace with your actual API call later)
+    resultBox.innerHTML = `
+        <strong>— Wh</strong>
+        <small>Prediction will appear here</small>
+    `;
+
+    resultBox.style.display = 'block';
+}
+</script>
+
 </body>
 </html>
